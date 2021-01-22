@@ -1,7 +1,12 @@
+package shoutingMTserver;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * Populates WeatherData objects with data
+ */
 class UserHandler extends DefaultHandler {
 
     boolean bstn = false;
@@ -55,61 +60,68 @@ class UserHandler extends DefaultHandler {
     }
 
     @Override
-    public void endElement(String uri,
-                           String localName, String qName) throws SAXException {
+    public void endDocument() throws SAXException {
+        System.out.println("End of file. Weatherdata: (NOTICE! Still raw, untampered data) \n" + weatherData + "\n");
 
-        if (qName.equalsIgnoreCase("measurement")) {
-            System.out.println("End Element :" + qName);
-        }
     }
 
     @Override
-    public void characters(char ch[], int start, int length) throws SAXException {
-        if (length > 0) {
+    public void characters(char[] ch, int start, int length) throws SAXException {
+        // Stop if not a value
+        String rawString = new String(ch, start, length);
+        if(rawString.trim().isEmpty()) {
+            return;
+        }
 
-
-            if (bstn) {
-                //System.out.println("Stn: " + new String(ch, start, length));
-                //weatherData.setStation = new String(ch, start, length);
-                bstn = false;
-            } else if (bdate) {
-                System.out.println("Date: " + new String(ch, start, length));
-                bdate = false;
-            } else if (btime) {
-                System.out.println("Time: " + new String(ch, start, length));
-                btime = false;
-            } else if (btemp) {
-                System.out.println("Temp: " + new String(ch, start, length));
+        // Populating weatherData object
+        if (bstn) {
+            //System.out.println("Stn: " + new String(ch, start, length));
+            weatherData.setStation(rawString);
+            bstn = false;
+        } else if (bdate) {
+            weatherData.setDate(rawString);
+            bdate = false;
+        } else if (btime) {
+            weatherData.setTime(rawString);
+            btime = false;
+        } else {
+            float floatValue = Float.parseFloat(new String(ch, start, length));
+            if (btemp) {
+                weatherData.setTemperature(floatValue);
                 btemp = false;
             } else if (bdewp) {
-                System.out.println("Dewp: " + new String(ch, start, length));
+                weatherData.setDewPoint(floatValue);
                 bdewp = false;
             } else if (bstp) {
-                System.out.println("Stp: " + new String(ch, start, length));
+                weatherData.setStationLevelAirPressure(floatValue);
                 bstp = false;
             } else if (bslp) {
-                System.out.println("Slp: " + new String(ch, start, length));
+                weatherData.setSeaLevelAirPressure(floatValue);
                 bslp = false;
             } else if (bvisib) {
-                System.out.println("Visib: " + new String(ch, start, length));
+                weatherData.setVisibility(floatValue);
                 bvisib = false;
             } else if (bwdsp) {
-                System.out.println("Wdsp: " + new String(ch, start, length));
+                weatherData.setWindSpeed(floatValue);
                 bwdsp = false;
             } else if (bprcp) {
-                System.out.println("Prcp: " + new String(ch, start, length));
+                weatherData.setPrecipitation(floatValue);
                 bprcp = false;
             } else if (bsndp) {
-                System.out.println("Sndp: " + new String(ch, start, length));
+                weatherData.setSnowDepth(floatValue);
                 bsndp = false;
             } else if (bfrshtt) {
-                System.out.println("frshtt: " + new String(ch, start, length));
+                try {
+                    weatherData.setEvents(Byte.parseByte(rawString, 2));
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid event-data: \"" + rawString + "\". Field will remain empty!");
+                }
                 bfrshtt = false;
             } else if (bcldc) {
-                System.out.println("Cldc: " + new String(ch, start, length));
+                weatherData.setCloudCoverage(floatValue);
                 bcldc = false;
             } else if (bwnddir) {
-                System.out.println("Wnddir: " + new String(ch, start, length));
+                weatherData.setWindDirection(Integer.parseInt(rawString));
                 bwnddir = false;
             }
         }

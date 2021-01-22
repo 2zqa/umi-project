@@ -5,7 +5,7 @@ import java.net.Socket;
 
 public class ShoutingMTServer {
 	public static final int PORT = 7789;
-	private static final int maxnrofConnections=4;
+	private static final int maxnrofConnections=800;
 	public static TelSemafoor mijnSemafoor = new TelSemafoor(maxnrofConnections);
 	
 	
