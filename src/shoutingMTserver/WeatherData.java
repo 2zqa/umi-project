@@ -3,22 +3,24 @@ package shoutingMTserver;
 import java.util.LinkedList;
 
 public class WeatherData {
-    String station; // stn
-    String date;
-    String time;
-    float temperature; // temp
-    float dewPoint; // dewp
-    float stationLevelAirPressure; // stp
-    float seaLevelAirPressure; // slp
-    float visibility; // visib
-    float windSpeed; // wdsp
-    float precipitation; // prcp, means rainfall
-    float snowDepth; // sndp
-    byte events; // frshtt, means: freeze, rain, snow, hail, thunder, tornado
-    float cloudCoverage; // cldc
-    int windDirection; // wnddir
+    public static WeatherDataHistory previousData = new WeatherDataHistory(30);
 
-    // Sea of setters
+    private String station; // stn
+    private String date;
+    private String time;
+    private float temperature; // temp
+    private float dewPoint; // dewp
+    private float stationLevelAirPressure; // stp
+    private float seaLevelAirPressure; // slp
+    private float visibility; // visib
+    private float windSpeed; // wdsp
+    private float precipitation; // prcp, means rainfall
+    private float snowDepth; // sndp
+    private byte events; // frshtt, means: freeze, rain, snow, hail, thunder, tornado
+    private float cloudCoverage; // cldc
+    private int windDirection; // wnddir
+
+    // Sea of setters and getters
     public void setStation(String station) {
         this.station = station;
     }
@@ -87,8 +89,8 @@ public class WeatherData {
 
         // Pseudocode:
         // Als getTemperature mist:
-        // anders, als absolute waarde van (getTemperature-avgTemperature)/avgTemperature > 0.2 is, dan:
-        //    temperatuur wordt "geëxtrapoleerde waarde ±20% voor de temperatuur" ???
+        // anders, als absolute waarde van (getTemperature-extrapolatedTemperature)/extrapolatedTemperature > 0.2 is, dan:
+        //    clamp getTemperature met avgTemp*1.2 en avgTemp*0.8
     }
 
     @Override

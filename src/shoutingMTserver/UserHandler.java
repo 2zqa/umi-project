@@ -62,7 +62,7 @@ class UserHandler extends DefaultHandler {
     @Override
     public void endDocument() throws SAXException {
         System.out.println("End of file. Weatherdata: (NOTICE! Still raw, untampered data) \n" + weatherData + "\n");
-
+        WeatherData.previousData.add(weatherData);
     }
 
     @Override
