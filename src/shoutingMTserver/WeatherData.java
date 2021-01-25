@@ -112,4 +112,60 @@ public class WeatherData {
                 ", windDirection=" + windDirection +
                 '}';
     }
+
+    public String getStation() {
+        return station;
+    }
+
+    public int getWindDirection() {
+        return windDirection;
+    }
+
+    public float getCloudCoverage() {
+        return cloudCoverage;
+    }
+
+    public byte getEvents() {
+        return events;
+    }
+
+    public float getSnowDepth() {
+        return snowDepth;
+    }
+
+    public float getPrecipitation() {
+        return precipitation;
+    }
+
+    public float getWindSpeed() {
+        return windSpeed;
+    }
+
+    public float getVisibility() {
+        return visibility;
+    }
+
+    public float getSeaLevelAirPressure() {
+        return seaLevelAirPressure;
+    }
+
+    public float getStationLevelAirPressure() {
+        return stationLevelAirPressure;
+    }
+
+    public float getDewPoint() {
+        return dewPoint;
+    }
+
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getDate() {
+        return date;
+    }
 }
