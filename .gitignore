@@ -6,6 +6,8 @@
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
+.idea/inspectionProfiles/Project_Default.xml
+.idea/vcs.xml
 .idea/**/shelf
 
 # Generated files
