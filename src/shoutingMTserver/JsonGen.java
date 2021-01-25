@@ -1,3 +1,5 @@
+package shoutingMTserver;
+
 import java.util.ArrayList;
 import java.io.*;
 
@@ -27,33 +29,33 @@ public class JsonGen {
                     writer.write(",");
                 }
                 writer.write("{");
-                writer.write("\"stn\": \"" + data.station + "\"");
+                writer.write("\"stn\": \"" + data.getStation() + "\"");
                 writer.write(", ");
-                writer.write("\"date\": \"" + data.date + "\"");
+                writer.write("\"date\": \"" + data.getDate() + "\"");
                 writer.write(", ");
-                writer.write("\"time\": \"" + data.time + "\"");
+                writer.write("\"time\": \"" + data.getTime() + "\"");
                 writer.write(", ");
-                writer.write("\"temp\": \"" + data.temperature + "\"");
+                writer.write("\"temp\": \"" + data.getTemperature() + "\"");
                 writer.write(", ");
-                writer.write("\"dewp\": \"" + data.dewPoint + "\"");
+                writer.write("\"dewp\": \"" + data.getDewPoint() + "\"");
                 writer.write(", ");
-                writer.write("\"stp\": \"" + data.stationLevelAirPressure + "\"");
+                writer.write("\"stp\": \"" + data.getStationLevelAirPressure() + "\"");
                 writer.write(", ");
-                writer.write("\"slp\": \"" + data.seaLevelAirPressure + "\"");
+                writer.write("\"slp\": \"" + data.getSeaLevelAirPressure() + "\"");
                 writer.write(", ");
-                writer.write("\"visib\": \"" + data.visibility + "\"");
+                writer.write("\"visib\": \"" + data.getVisibility() + "\"");
                 writer.write(", ");
-                writer.write("\"wdsp\": \"" + data.windSpeed + "\"");
+                writer.write("\"wdsp\": \"" + data.getWindSpeed() + "\"");
                 writer.write(", ");
-                writer.write("\"prcp\": \"" + data.precipitation + "\"");
+                writer.write("\"prcp\": \"" + data.getPrecipitation() + "\"");
                 writer.write(", ");
-                writer.write("\"sndp\": \"" + data.snowDepth + "\"");
+                writer.write("\"sndp\": \"" + data.getSnowDepth() + "\"");
                 writer.write(", ");
-                writer.write("\"frshtt\": \"" + data.events + "\"");
+                writer.write("\"frshtt\": \"" + data.getEvents() + "\"");
                 writer.write(", ");
-                writer.write("\"cldc\": \"" + data.cloudCoverage + "\"");
+                writer.write("\"cldc\": \"" + data.getCloudCoverage() + "\"");
                 writer.write(", ");
-                writer.write("\"wnddir\": \"" + data.windDirection + "\"");
+                writer.write("\"wnddir\": \"" + data.getWindDirection() + "\"");
                 writer.write("}");
             }
             writer.write("]");
