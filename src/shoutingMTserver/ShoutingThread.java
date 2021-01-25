@@ -25,30 +25,20 @@ class Worker implements Runnable
 			//lets check if we already accepted maximum number of connections
 			ShoutingMTServer.mijnSemafoor.probeer();
 
-			try {
-				// Prepare parser
-				SAXParserFactory factory = SAXParserFactory.newInstance();
-				SAXParser saxParser = factory.newSAXParser();
-				UserHandler userHandler = new UserHandler();
+			// Prepare parser
+			WeatherDataXMLParser parser = new WeatherDataXMLParser();
+			WeatherData data = new WeatherData();
 
-				BufferedReader bin = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			BufferedReader bin = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			while ((line = bin.readLine()) != null) {
+				//System.out.println(line);
+				parser.parse(line, data);
 
-				// XML file buffer
-				StringBuilder builder = new StringBuilder();
-
-				while ((line = bin.readLine()) != null) {
-					// Add line to buffer
-					builder.append(line);
-					//System.out.println(line);
-
-					// If it's the end of the XML file, parse it and reset buffer
-					if(line.equalsIgnoreCase("</weatherdata>")) {
-						saxParser.parse(new InputSource(new StringReader(builder.toString())), userHandler);
-						builder = new StringBuilder();
-					}
+				// If it's the end of the XML file, parse it and reset buffer
+				if(line.trim().equalsIgnoreCase("</MEASUREMENT>")) {
+					System.out.println(data);
+					data = new WeatherData();
 				}
-			} catch (SAXException | ParserConfigurationException e) {
-				e.printStackTrace();
 			}
 
 			// now close the socket connection

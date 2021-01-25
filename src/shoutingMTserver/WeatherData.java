@@ -1,171 +1,61 @@
 package shoutingMTserver;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 
 public class WeatherData {
-    public static WeatherDataHistory previousData = new WeatherDataHistory(30);
 
-    private String station; // stn
-    private String date;
-    private String time;
-    private float temperature; // temp
-    private float dewPoint; // dewp
-    private float stationLevelAirPressure; // stp
-    private float seaLevelAirPressure; // slp
-    private float visibility; // visib
-    private float windSpeed; // wdsp
-    private float precipitation; // prcp, means rainfall
-    private float snowDepth; // sndp
-    private byte events; // frshtt, means: freeze, rain, snow, hail, thunder, tornado
-    private float cloudCoverage; // cldc
-    private int windDirection; // wnddir
+    private HashMap<String, String> attributes;
 
-    // Sea of setters and getters
-    public void setStation(String station) {
-        this.station = station;
-    }
-    public void setDate(String date) {
-        this.date = date;
-    }
-    public void setTime(String time) {
-        this.time = time;
-    }
-    public void setTemperature(float temperature) {
-        this.temperature = temperature;
-    }
-    public void setDewPoint(float dewPoint) {
-        this.dewPoint = dewPoint;
-    }
-    public void setStationLevelAirPressure(float stationLevelAirPressure) {
-        this.stationLevelAirPressure = stationLevelAirPressure;
-    }
-    public void setSeaLevelAirPressure(float seaLevelAirPressure) {
-        this.seaLevelAirPressure = seaLevelAirPressure;
-    }
-    public void setVisibility(float visibility) {
-        this.visibility = visibility;
-    }
-    public void setWindSpeed(float windSpeed) {
-        this.windSpeed = windSpeed;
-    }
-    public void setPrecipitation(float precipitation) {
-        this.precipitation = precipitation;
-    }
-    public void setSnowDepth(float snowDepth) {
-        this.snowDepth = snowDepth;
-    }
-    public void setEvents(byte events) {
-        this.events = events;
-    }
-    public void setCloudCoverage(float cloudCoverage) {
-        this.cloudCoverage = cloudCoverage;
-    }
-    public void setWindDirection(int windDirection) {
-        this.windDirection = windDirection;
+    public WeatherData() {
+        attributes = new HashMap<String, String>();
+        attributes.put("STN", null);
+        attributes.put("DATE", null);
+        attributes.put("TIME", null);
+        attributes.put("TEMP", null);
+        attributes.put("DEWP", null);
+        attributes.put("STP", null);
+        attributes.put("SLP", null);
+        attributes.put("VISIB", null);
+        attributes.put("WDSP", null);
+        attributes.put("PRCP", null);
+        attributes.put("SNDP", null);
+        attributes.put("FRSHTT", null);
+        attributes.put("CLDC", null);
+        attributes.put("WNDDIR", null);
     }
 
     /**
-     * Exports the object as a JSON file in the correct folder
+     * Adds value to the class if the tag exists.
+     * @param tag can be STN, DATE, TIME, TEMP, DEWP, STP, SLP, VISIB, WDSP, PRCP, SNDP, FRSHTT, CLDC or WNDDIR
+     * @param value the value
      */
+    public void add(String tag, String value) {
+        attributes.replace(tag, value);
+    }
+
+    public String get(String tag) {
+        return attributes.get(tag);
+    }
+
+    // Repairs any missing or over the top values
+    public void repair() {
+        for(String tag : attributes.keySet()) {
+            // Magie hier
+        }
+    }
+
     public void export() {
-        // Todo: voor Tom
 
-        // belangrijk: repairData moet aangeroepen worden
-    }
-
-    /**
-     * Checks all fields for unrealistic or missing data and extrapolates a new value.
-     *
-     * Official description:
-     * Een meetwaarde voor de temperatuur wordt als irreëel beschouwd indien ze 20% of meer groter is of kleiner is dan
-     * wat men kan verwachten op basis van extrapolatie van de dertig voorafgaande temperatuurmetingen.
-     * In dat geval wordt de geëxtrapoleerde waarde ±20% voor de temperatuur opgeslagen.
-     * Voor de andere meetwaarden wordt deze handelswijze niet toegepast.
-     */
-    public void repairData() {
-        // Todo: voor Janine en Marijn
-
-        // Moeten array hebben van 30 vorige weatherdata klassen (die de meetdata bevat, dus)
-
-        // Pseudocode:
-        // Als getTemperature mist:
-        // anders, als absolute waarde van (getTemperature-extrapolatedTemperature)/extrapolatedTemperature > 0.2 is, dan:
-        //    clamp getTemperature met avgTemp*1.2 en avgTemp*0.8
     }
 
     @Override
     public String toString() {
-        return "WeatherData{" +
-                "station='" + station + '\'' +
-                ", date='" + date + '\'' +
-                ", time='" + time + '\'' +
-                ", temperature=" + temperature +
-                ", dewPoint=" + dewPoint +
-                ", stationLevelAirPressure=" + stationLevelAirPressure +
-                ", seaLevelAirPressure=" + seaLevelAirPressure +
-                ", visibility=" + visibility +
-                ", windSpeed=" + windSpeed +
-                ", precipitation=" + precipitation +
-                ", snowDepth=" + snowDepth +
-                ", events=" + events +
-                ", cloudCoverage=" + cloudCoverage +
-                ", windDirection=" + windDirection +
-                '}';
-    }
+        StringBuilder output = new StringBuilder();
+        for(String key : attributes.keySet()) {
+            String value = attributes.get(key);
+            output.append(key + ":" + value + " ");
+        }
 
-    public String getStation() {
-        return station;
-    }
-
-    public int getWindDirection() {
-        return windDirection;
-    }
-
-    public float getCloudCoverage() {
-        return cloudCoverage;
-    }
-
-    public byte getEvents() {
-        return events;
-    }
-
-    public float getSnowDepth() {
-        return snowDepth;
-    }
-
-    public float getPrecipitation() {
-        return precipitation;
-    }
-
-    public float getWindSpeed() {
-        return windSpeed;
-    }
-
-    public float getVisibility() {
-        return visibility;
-    }
-
-    public float getSeaLevelAirPressure() {
-        return seaLevelAirPressure;
-    }
-
-    public float getStationLevelAirPressure() {
-        return stationLevelAirPressure;
-    }
-
-    public float getDewPoint() {
-        return dewPoint;
-    }
-
-    public float getTemperature() {
-        return temperature;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public String getDate() {
-        return date;
+        return output.toString();
     }
 }

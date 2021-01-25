@@ -30,6 +30,38 @@ public class WeatherDataHistory implements Iterable<WeatherData> {
         return history.size();
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
+    /**
+     * Calculates a new temperatue based on previous data. TODO: extrapolate using fancy formula?
+     * @return the new extrapolated value
+     */
+    public float extrapolateFloat(String tag) {
+        float total = 0;
+        int n = 0;
+        for(WeatherData data : history) {
+            total += Float.parseFloat(data.get(tag));
+            n++;
+        }
+        return total/(float)n;
+    }
+
+    /**
+     * Calculates a new temperatue based on previous data. TODO: extrapolate using fancy formula?
+     * @return the new extrapolated value
+     */
+    public int extrapolateInt(String tag) {
+        int total = 0;
+        int n = 0;
+        for(WeatherData data : history) {
+            total += Integer.parseInt(data.get(tag));
+            n++;
+        }
+        return total/n;
+    }
+
 
     @Override
     public Iterator<WeatherData> iterator() {
