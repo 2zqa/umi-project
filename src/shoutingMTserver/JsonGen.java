@@ -20,7 +20,6 @@ public class JsonGen {
 
     public void toJson(String filename) {
         try {
-            //File file = new File(filename);
             FileWriter writer = new FileWriter(filename);
             writer.write("[");
             for (int i = 0; i < weatherdata.size(); i++) {
@@ -29,33 +28,33 @@ public class JsonGen {
                     writer.write(",");
                 }
                 writer.write("{");
-                writer.write("\"stn\": \"" + data.getStation() + "\"");
+                writer.write("\"stn\": \"" + data.get("STN") + "\"");
                 writer.write(", ");
-                writer.write("\"date\": \"" + data.getDate() + "\"");
+                writer.write("\"date\": \"" + data.get("DATE") + "\"");
                 writer.write(", ");
-                writer.write("\"time\": \"" + data.getTime() + "\"");
+                writer.write("\"time\": \"" + data.get("TIME") + "\"");
                 writer.write(", ");
-                writer.write("\"temp\": \"" + data.getTemperature() + "\"");
+                writer.write("\"temp\": \"" + data.get("TEMP") + "\"");
                 writer.write(", ");
-                writer.write("\"dewp\": \"" + data.getDewPoint() + "\"");
+                writer.write("\"dewp\": \"" + data.get("DEWP") + "\"");
                 writer.write(", ");
-                writer.write("\"stp\": \"" + data.getStationLevelAirPressure() + "\"");
+                writer.write("\"stp\": \"" + data.get("STP") + "\"");
                 writer.write(", ");
-                writer.write("\"slp\": \"" + data.getSeaLevelAirPressure() + "\"");
+                writer.write("\"slp\": \"" + data.get("SLP") + "\"");
                 writer.write(", ");
-                writer.write("\"visib\": \"" + data.getVisibility() + "\"");
+                writer.write("\"visib\": \"" + data.get("VISIB") + "\"");
                 writer.write(", ");
-                writer.write("\"wdsp\": \"" + data.getWindSpeed() + "\"");
+                writer.write("\"wdsp\": \"" + data.get("WDSP") + "\"");
                 writer.write(", ");
-                writer.write("\"prcp\": \"" + data.getPrecipitation() + "\"");
+                writer.write("\"prcp\": \"" + data.get("PRCP") + "\"");
                 writer.write(", ");
-                writer.write("\"sndp\": \"" + data.getSnowDepth() + "\"");
+                writer.write("\"sndp\": \"" + data.get("SNDP") + "\"");
                 writer.write(", ");
-                writer.write("\"frshtt\": \"" + data.getEvents() + "\"");
+                writer.write("\"frshtt\": \"" + data.get("FRSHTT") + "\"");
                 writer.write(", ");
-                writer.write("\"cldc\": \"" + data.getCloudCoverage() + "\"");
+                writer.write("\"cldc\": \"" + data.get("CLDC") + "\"");
                 writer.write(", ");
-                writer.write("\"wnddir\": \"" + data.getWindDirection() + "\"");
+                writer.write("\"wnddir\": \"" + data.get("WNDDIR") + "\"");
                 writer.write("}");
             }
             writer.write("]");
