@@ -48,7 +48,7 @@ class Worker implements Runnable
 					data = new WeatherData();
 				}
 				//elke 60 seconden wordt de data in de jsongen naar een json-bestand geschreven
-				if(LocalTime.now().getSecond() - beginTijd.getSecond() >=60) {
+				if(LocalTime.now().getMinute() - beginTijd.getMinute() >=1) {
 					System.out.println("");
 					System.out.println("Data moet nu in file komen");
 					System.out.println("");
