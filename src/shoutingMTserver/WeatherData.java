@@ -40,7 +40,17 @@ public class WeatherData {
     // Repairs any missing or over the top values
     public void repair() {
         for(String tag : attributes.keySet()) {
-            // Magie hier
+            if(tag == null){
+                int intTag = Integer.parseInt(tag);
+                int together = 0;
+                for(int i = 0; i<=10; i++){
+                    int newTogether = together + intTag;
+                    together = newTogether;
+                int mean = together/10;
+                String newTag = String.valueOf(mean);
+                add(tag, newTag);
+                }
+            }
         }
     }
 
