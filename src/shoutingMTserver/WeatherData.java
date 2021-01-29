@@ -43,7 +43,7 @@ public class WeatherData {
             if(tag == null){
                 int intTag = Integer.parseInt(tag);
                 int together = 0;
-                for(int i = 0; i<=10; i++){
+                for(int i = 0; i<=9; i++){
                     int newTogether = together + intTag;
                     together = newTogether;
                 int mean = together/10;
