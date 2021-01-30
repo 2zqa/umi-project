@@ -39,7 +39,6 @@ class Worker implements Runnable
 				// If it's the end of the XML file, parse it and reset buffer
 				if(line.trim().equalsIgnoreCase("</MEASUREMENT>")) {
 					generator.addWeatherData(data);
-					System.out.println(data);
 					data = new WeatherData();
 				}
 			}
