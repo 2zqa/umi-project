@@ -40,6 +40,7 @@ public class JsonGen {
 
     //TODO: itereer door keyset, pak array die bij stationsnummer hoort, maak json bestand met al die weatherdataobjecten en schrijf naar bestand (met juist mapje)
     public void toJson(String filename) {
+        System.out.println("Writing "+weatherDataMap.size()+" files");
 
         for (String stationNumber : weatherDataMap.keySet()) {
             // Create directory if it does not exist
