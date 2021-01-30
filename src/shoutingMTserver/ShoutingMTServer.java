@@ -13,7 +13,7 @@ public class ShoutingMTServer {
 		System.out.println("Running in folder "+System.getProperty("user.dir"));
 		Socket connection;
 		JsonGen generator = new JsonGen();
-		generator.dumpJsonEverySecond();
+		generator.toJson();
 		try {
 			ServerSocket server = new ServerSocket(PORT);
 			System.err.println("MT Server started..bring on the load, to a maximum of: " + maxnrofConnections);
