@@ -10,7 +10,10 @@ public class ShoutingMTServer {
 	
 	
 	public static void main(String[] args) {
+		System.out.println(System.getProperty("user.dir"));
 		Socket connection;
+		JsonGen generator = new JsonGen();
+		generator.dumpJsonEverySecond();
 		try {
 			ServerSocket server = new ServerSocket(PORT);
 			System.err.println("MT Server started..bring on the load, to a maximum of: " + maxnrofConnections);
@@ -20,7 +23,7 @@ public class ShoutingMTServer {
 			while (true) {
 				connection = server.accept();
 				//System.err.println("New connection accepted..handing it over to worker thread");
-				Thread worker = new Thread(new Worker(connection));
+				Thread worker = new Thread(new Worker(connection, generator));
 				worker.start();
 			}
 		}

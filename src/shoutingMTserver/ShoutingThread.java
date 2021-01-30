@@ -1,21 +1,19 @@
 package shoutingMTserver;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
 import java.time.LocalTime;
-//import java.util.concurrent.*;
 
 class Worker implements Runnable
 {
 	private Socket connection;
+	private JsonGen generator;
 
-	public Worker(Socket connection) {
+	public Worker(Socket connection, JsonGen generator) {
 		this.connection = connection;
+		this.generator = generator;
 	}
 
 	public void run() {
@@ -30,9 +28,6 @@ class Worker implements Runnable
 			WeatherDataXMLParser parser = new WeatherDataXMLParser();
 			WeatherData data = new WeatherData();
 
-			// Json generator aanmaken
-			JsonGen jsonGen = new JsonGen();
-
 			//begintijd voor timer
 			LocalTime beginTijd = LocalTime.now();
 
@@ -43,20 +38,9 @@ class Worker implements Runnable
 
 				// If it's the end of the XML file, parse it and reset buffer
 				if(line.trim().equalsIgnoreCase("</MEASUREMENT>")) {
-					jsonGen.addWeatherData(data);
+					generator.addWeatherData(data);
 					System.out.println(data);
 					data = new WeatherData();
-				}
-				//elke 60 seconden wordt de data in de jsongen naar een json-bestand geschreven
-				if(LocalTime.now().getMinute() - beginTijd.getMinute() >=1) {
-					System.out.println("");
-					System.out.println("Data moet nu in file komen");
-					System.out.println("");
-					// json bestand maken en de generator legen BELANGRIJK: zoals de data nu wordt opgeslagen is niet handig, moet nog ff nadenken over naamgeving
-					jsonGen.toJson("jsondump\\minuut" + LocalTime.now().getMinute() + ".json");
-					jsonGen.removeAllData();
-					//timer resetten
-					beginTijd = LocalTime.now();
 				}
 			}
 
