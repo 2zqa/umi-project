@@ -10,7 +10,7 @@ public class ShoutingMTServer {
 	
 	
 	public static void main(String[] args) {
-		System.out.println(System.getProperty("user.dir"));
+		System.out.println("Running in folder "+System.getProperty("user.dir"));
 		Socket connection;
 		JsonGen generator = new JsonGen();
 		generator.dumpJsonEverySecond();
