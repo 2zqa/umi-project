@@ -71,9 +71,8 @@ public class WeatherData {
             if(value == null && canRepair) { // value = null, canRepair = true; (wel vorige data beschikbaar)
                 String newValue = "";
                 switch(tag) {
-                    //TODO: frshtt fixen
                     case "FRSHTT":
-                        newValue = "WORK IN PROGRESS";
+                        newValue = extrapolateByteValue(tag, oldWeatherData);
                         break;
                     case "WNDDIR":
                         newValue = String.valueOf(extrapolateIntValue(tag, oldWeatherData)); //TODO: check of extrapolatie werkt (als tijd over is)
@@ -127,11 +126,12 @@ public class WeatherData {
     }
 
     private String extrapolateByteValue(String tag, ArrayList<WeatherData> weatherDataArrayList) {
+        // dit kan in theorie niet gebeuren
         if(weatherDataArrayList.size() == 0) {
             return null;
         }
-        //TODO: frshtt fixen
-        return null;
+        String value = weatherDataArrayList.get(0).get(tag);
+        return value;
     }
 
 
