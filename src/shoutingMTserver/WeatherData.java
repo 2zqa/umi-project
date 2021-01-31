@@ -1,6 +1,10 @@
 package shoutingMTserver;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
 
 public class WeatherData {
 
@@ -40,22 +44,43 @@ public class WeatherData {
     // Repairs any missing or over the top values
     public void repair() {
         for(String tag : attributes.keySet()) {
-            if(tag == null){
-                int intTag = Integer.parseInt(tag);
+            if(tag == null && !(tag.equals("stn")|| tag.equals("date")||tag.equals("time"))){
+                if(tag.equals("wnddir")) {
+                    int intTag = Integer.parseInt(tag);
+                    int[] intData = new int[30];
+
+                } else if(tag.equals("frshtt")) {
+                    byte byteTag = Byte.parseByte(tag);
+                } else {
+                    float floatTag = Float.parseFloat(tag);
+                }
                 int together = 0;
-                for(int i = 0; i<=9; i++){
-                    int newTogether = together + intTag;
-                    together = newTogether;
-                int mean = together/10;
-                String newTag = String.valueOf(mean);
-                add(tag, newTag);
+//                for(int i = 0; i<=9; i++){
+//                    int newTogether = together + intTag;
+//                    together = newTogether;
+//                int mean = together/10;
+//                String newTag = String.valueOf(mean);
+//                add(tag, newTag);
                 }
             }
-        }
+
     }
 
-    public void export() {
-
+    public int[] getIntArray(String stnummer) {
+        File path = new File(JsonGen.PATH + stnummer);
+        File[] directoryListing = path.listFiles();
+        Arrays.sort(directoryListing, Collections.reverseOrder());
+        if (directoryListing != null) {
+            int fileCount = directoryListing.length;
+            if(fileCount > 30) {
+                fileCount = 30;
+            }
+            for (int i = 0; i < fileCount; i++) {
+                File child = directoryListing[i];
+                System.out.println(child);
+            }
+        }
+        return new int[3];
     }
 
     @Override

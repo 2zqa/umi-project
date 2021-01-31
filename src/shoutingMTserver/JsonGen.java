@@ -1,8 +1,6 @@
 package shoutingMTserver;
 
 import java.time.Instant;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.*;
 import java.util.concurrent.*;
@@ -11,7 +9,7 @@ import static java.util.concurrent.TimeUnit.*;
 
 public class JsonGen {
     public static final String ROOT_FOLDER = "weatherdata-mounting-point";
-    private String path = System.getProperty("user.dir").concat(File.separator+ROOT_FOLDER+File.separator); // /home/user/
+    public static final String PATH = System.getProperty("user.dir").concat(File.separator+ROOT_FOLDER+File.separator); // /home/user/
     private HashMap<String, WeatherData> weatherDataMap;
 
     //Scheduler
@@ -30,6 +28,7 @@ public class JsonGen {
     public void addWeatherData(WeatherData data) {
         String stationNumber = data.get("STN");
         if(!weatherDataMap.containsKey(stationNumber)) {
+            data.repair();
             weatherDataMap.put(stationNumber, data);
         }
     }
@@ -44,7 +43,7 @@ public class JsonGen {
 
         for (String stationNumber : weatherDataMap.keySet()) {
             // Create directory if it does not exist
-            String folder = path.concat(File.separator + stationNumber);
+            String folder = PATH.concat(File.separator + stationNumber);
             File file = new File(folder); // bv C:\Users\mshko\12710\
             //System.out.println(file.getAbsolutePath());
             file.mkdirs();
