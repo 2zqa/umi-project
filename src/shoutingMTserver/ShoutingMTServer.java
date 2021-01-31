@@ -19,6 +19,8 @@ public class ShoutingMTServer {
 			System.err.println("MT Server started..bring on the load, to a maximum of: " + maxnrofConnections);
 
 			//System.out.println(server.toString());
+
+			//TODO: verwijder oude bestanden d.m.v. cronjob
 			
 			while (true) {
 				connection = server.accept();

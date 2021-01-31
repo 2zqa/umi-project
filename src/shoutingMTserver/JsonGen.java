@@ -25,11 +25,15 @@ public class JsonGen {
      *
      * @param data
      */
-    public void addWeatherData(WeatherData data) {
+    public synchronized void addWeatherData(WeatherData data) {
         String stationNumber = data.get("STN");
         if(!weatherDataMap.containsKey(stationNumber)) {
-            data.repair();
-            weatherDataMap.put(stationNumber, data);
+            boolean successful = data.repair();
+            if(successful) {
+                weatherDataMap.put(stationNumber, data);
+            } else {
+                System.err.println("Fout bij repareren... wordt niet toegevoegd!");
+            }
         }
     }
 
@@ -37,7 +41,6 @@ public class JsonGen {
         weatherDataMap.clear();
     }
 
-    //TODO: itereer door keyset, pak array die bij stationsnummer hoort, maak json bestand met al die weatherdataobjecten en schrijf naar bestand (met juist mapje)
     public void toJson(String filename) {
         System.out.println("Writing "+weatherDataMap.size()+" files");
 

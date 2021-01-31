@@ -1,14 +1,15 @@
 package shoutingMTserver;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.io.File;
-import java.io.IOException;
 
 public class WeatherData {
 
     private HashMap<String, String> attributes;
+    private JsonParser jsonParser = new JsonParser();
 
     public WeatherData() {
         attributes = new HashMap<String, String>();
@@ -41,46 +42,149 @@ public class WeatherData {
         return attributes.get(tag);
     }
 
-    // Repairs any missing or over the top values
-    public void repair() {
-        for(String tag : attributes.keySet()) {
-            if(tag == null && !(tag.equals("stn")|| tag.equals("date")||tag.equals("time"))){
-                if(tag.equals("wnddir")) {
-                    int intTag = Integer.parseInt(tag);
-                    int[] intData = new int[30];
+    /**
+     * Repairs any missing or over the top values
+     * Forced to query thirty weatherdatastations at all times, otherwise cant check unreasonable data
+     *
+     * Will return false if there is no previous data to repair with and data is missing
+     */
+    public boolean repair() {
+        String stationNumber = attributes.get("STN");
+        boolean needsRepairing = false;
 
-                } else if(tag.equals("frshtt")) {
-                    byte byteTag = Byte.parseByte(tag);
-                } else {
-                    float floatTag = Float.parseFloat(tag);
-                }
-                int together = 0;
-//                for(int i = 0; i<=9; i++){
-//                    int newTogether = together + intTag;
-//                    together = newTogether;
-//                int mean = together/10;
-//                String newTag = String.valueOf(mean);
-//                add(tag, newTag);
-                }
+        // Check if there is previous data to repair with
+        ArrayList<WeatherData> oldWeatherData = getWeatherDataArrayByStationNumber(stationNumber, 30);
+        boolean canRepair = true;
+        if(oldWeatherData.size() == 0) {
+            canRepair = false;
+        }
+
+        // tag can be WDSP for example
+        for(String tag : attributes.keySet()) {
+            // Skip stn, date and time
+            if (tag.equals("stn") || tag.equals("date") || tag.equals("time")) {
+                continue;
             }
 
+            // Check if value is empty; if so, add new data
+            String value = attributes.get(tag);
+            if(value == null && canRepair) { // value = null, canRepair = true; (wel vorige data beschikbaar)
+                String newValue = "";
+                switch(tag) {
+                    //TODO: frshtt fixen
+                    case "FRSHTT":
+                        newValue = "WORK IN PROGRESS";
+                        break;
+                    case "WNDDIR":
+                        newValue = String.valueOf(extrapolateIntValue(tag, oldWeatherData)); //TODO: check of extrapolatie werkt (als tijd over is)
+                        break;
+                    default:
+                        newValue = String.valueOf(extrapolateFloatValue(tag, oldWeatherData));
+                        break;
+
+                }
+                if(newValue.isEmpty()) {
+                    System.err.println("Nieuwe waarde voor "+ tag +" is niet goed geextrapoleerd. Dit zou niet moeten gebeuren!");
+                    continue;
+                } else {
+                    //System.out.println("Nieuwe waarde geëxtrapoleerd voor "+tag+": "+newValue);
+                    needsRepairing = true;
+                }
+                this.add(tag, newValue);
+            } else if(value == null) {
+                needsRepairing = true;
+            }
+
+            // Als data vet groot of vet klein is, fix het
+//            if() {
+//
+//            }
+        }
+
+        if(!canRepair && needsRepairing) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    public int[] getIntArray(String stnummer) {
+    private float extrapolateFloatValue(String tag, ArrayList<WeatherData> weatherDataArrayList) {
+        switch(weatherDataArrayList.size()) {
+            case 0:
+                return 0;
+            case 1:
+                return Float.parseFloat(weatherDataArrayList.get(0).get(tag));
+            default:
+                float total = 0;
+                int i = 0;
+                while(i < weatherDataArrayList.size()) {
+                    // gets the i'th weatherdata and then gets the specified tag (like DEWP)
+                    total += Float.parseFloat(weatherDataArrayList.get(i).get(tag));
+                    i++;
+                }
+                return total/i;
+        }
+    }
+
+    private String extrapolateByteValue(String tag, ArrayList<WeatherData> weatherDataArrayList) {
+        if(weatherDataArrayList.size() == 0) {
+            return null;
+        }
+        //TODO: frshtt fixen
+        return null;
+    }
+
+
+
+    /**
+     * Takes a list of weatherdata stations and calculates a new value based on the previous ones
+     * @param tag what field to calculate from
+     * @param weatherDataArrayList the list of weatherdata objects
+     * @return
+     */
+    private int extrapolateIntValue(String tag, ArrayList<WeatherData> weatherDataArrayList) {
+        if(weatherDataArrayList.size() == 0) {
+            return 0;
+        }
+        int total = 0;
+        int i = 0;
+        while(i < weatherDataArrayList.size()) {
+            // gets the i'th weatherdata and then gets the specified tag (like WNDDIR)
+            total += Integer.parseInt(weatherDataArrayList.get(i).get(tag));
+            i++;
+        }
+
+        return total/i;
+    }
+
+    public ArrayList<WeatherData> getWeatherDataArrayByStationNumber(String stnummer, int maxFiles) {
+        ArrayList<WeatherData> dataArray = new ArrayList<WeatherData>();
+
         File path = new File(JsonGen.PATH + stnummer);
         File[] directoryListing = path.listFiles();
-        Arrays.sort(directoryListing, Collections.reverseOrder());
         if (directoryListing != null) {
+            Arrays.sort(directoryListing, Collections.reverseOrder());
             int fileCount = directoryListing.length;
-            if(fileCount > 30) {
-                fileCount = 30;
+            if(fileCount > maxFiles) {
+                fileCount = maxFiles;
             }
             for (int i = 0; i < fileCount; i++) {
                 File child = directoryListing[i];
-                System.out.println(child);
+                try(BufferedReader reader = new BufferedReader(new FileReader(child))) {
+                    // Get first line of file (there should be only one anyway)
+                    String text = reader.readLine();
+
+                    // Parse and add to array
+                    WeatherData data = new WeatherData();
+                    jsonParser.parse(text, data);
+                    dataArray.add(data);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        return new int[3];
+        return dataArray;
     }
 
     @Override

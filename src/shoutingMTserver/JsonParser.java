@@ -11,7 +11,8 @@ public class JsonParser {
         String[] stringArray = tag.split(",");
 
         for (String string: stringArray) {
-            String[] kvPaar = string.split(":");
+            String[] kvPaar = string.split(":",2);
+
             kvPaar[0] = kvPaar[0].replaceAll("\"", "");
             kvPaar[1] = kvPaar[1].replaceAll("\"", "");
             data.add(kvPaar[0], kvPaar[1]);
