@@ -2,14 +2,19 @@ package shoutingMTserver;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.time.LocalTime;
 
 class Worker implements Runnable
 {
+	private static final int MAX_NUMBER_OF_TRIES = 200;
+	private static final long MAX_DELAY_BEFORE_NEXT_TRY = 10;
 	private Socket connection;
 	private JsonGen generator;
+
+	static volatile int recordInQueue = 0;
 
 	public Worker(Socket connection, JsonGen generator) {
 		this.connection = connection;
@@ -31,20 +36,31 @@ class Worker implements Runnable
 			//begintijd voor timer
 			LocalTime beginTijd = LocalTime.now();
 
-			BufferedReader bin = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			InputStream stream = connection.getInputStream();
+
+			BufferedReader bin = new BufferedReader(new InputStreamReader(stream));
+			int numberOfTry = 0;
+
 			while(true) {
-				if(!bin.ready()) {
-					// Give chance to connect
-					Thread.sleep(1000);
-					if(!bin.ready()) {
-						// last chance...
-						Thread.sleep(3000);
-						if(!bin.ready()) {
-							break;
-						}
+
+				if(!bin.ready()) {//If stream is not ready
+					//If number of tries is not exceeded
+					if (numberOfTry < MAX_NUMBER_OF_TRIES) {
+						numberOfTry++;
+						//Wait for stream to become ready
+						Thread.sleep(MAX_DELAY_BEFORE_NEXT_TRY);
+						continue;
+					} else {
+						break;
 					}
 				}
+				numberOfTry = 0;
 				line = bin.readLine();
+				int available = stream.available();
+				if(available > recordInQueue) {
+					recordInQueue = available;
+					System.out.println(recordInQueue);
+				}
 				//System.out.println(line);
 //				if(9>8) {
 //					throw new RuntimeException("test");
