@@ -34,9 +34,6 @@ class Worker implements Runnable
 			BufferedReader bin = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			while ((line = bin.readLine()) != null) {
 				//System.out.println(line);
-				if(9>8) {
-					throw new IOException("test");
-				}
 				parser.parse(line, data);
 
 				// If it's the end of the XML file, parse it and reset buffer
