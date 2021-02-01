@@ -1,6 +1,8 @@
 package shoutingMTserver;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.io.*;
 import java.util.concurrent.*;
@@ -42,7 +44,11 @@ public class JsonGen {
     }
 
     public void toJson(String filename) {
-        System.out.println("Writing "+weatherDataMap.size()+" files");
+        String pattern = "HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+        String date = simpleDateFormat.format(new Date());
+        System.out.println(date +" - Writing "+weatherDataMap.size()+" files");
 
         for (String stationNumber : weatherDataMap.keySet()) {
             // Create directory if it does not exist
