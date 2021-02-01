@@ -30,6 +30,9 @@ public class ShoutingMTServer {
 			}
 		}
 
-		catch (java.io.IOException ioe) { }
+		catch (java.io.IOException ioe) {
+			System.err.println("Thread is gestorven :( stacktrace:");
+			ioe.printStackTrace();
+		}
 	}
 }

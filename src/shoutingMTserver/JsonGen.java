@@ -33,8 +33,6 @@ public class JsonGen {
             boolean successful = data.repair();
             if(successful) {
                 weatherDataMap.put(stationNumber, data);
-            } else {
-                System.err.println("Fout bij repareren... wordt niet toegevoegd!");
             }
         }
     }
@@ -44,6 +42,7 @@ public class JsonGen {
     }
 
     public void toJson(String filename) {
+        long startTime = System.nanoTime();
         String pattern = "HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
@@ -94,6 +93,8 @@ public class JsonGen {
                 e.printStackTrace();
             }
         }
+        long endTime = System.nanoTime();
+        System.out.println("Writing done in " + ((endTime - startTime)/1000000000) + " seconds");
     }
 
     /**
