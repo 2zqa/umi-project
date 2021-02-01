@@ -11,6 +11,7 @@ class Worker implements Runnable
 {
 	private static final int MAX_NUMBER_OF_TRIES = 200;
 	private static final long MAX_DELAY_BEFORE_NEXT_TRY = 10;
+	private static final int MAX_QUEUE_SIZE = 10000; // room for about 3 xml files(3K bytes) + margin
 	private Socket connection;
 	private JsonGen generator;
 
@@ -43,6 +44,7 @@ class Worker implements Runnable
 
 			while(true) {
 
+				// Check
 				if(!bin.ready()) {//If stream is not ready
 					//If number of tries is not exceeded
 					if (numberOfTry < MAX_NUMBER_OF_TRIES) {
@@ -55,16 +57,24 @@ class Worker implements Runnable
 					}
 				}
 				numberOfTry = 0;
+
 				line = bin.readLine();
+
+				// A problem was that the program could not keep up with the incoming data. To migitate this, we clear
+				// the queue when it becomes too full. This is done by reading/clearing the lines as fast as possible.
 				int available = stream.available();
-				if(available > recordInQueue) {
-					recordInQueue = available;
-					System.out.println(recordInQueue);
+				if(available > MAX_QUEUE_SIZE) {
+					// Throw away weatherdata
+					data = new WeatherData();
+
+					// clear queue from bufferedReader (and therefore InputStream)
+					while(stream.available() > 0 && bin.ready()) {
+						bin.readLine();
+					}
+					System.out.println("Buffer was too large; cleared.");
 				}
-				//System.out.println(line);
-//				if(9>8) {
-//					throw new RuntimeException("test");
-//				}
+
+				// Parse data
 				parser.parse(line, data);
 
 				// If it's the end of the XML file, parse it and reset buffer
