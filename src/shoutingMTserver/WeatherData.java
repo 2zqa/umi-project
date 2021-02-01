@@ -115,6 +115,12 @@ public class WeatherData {
         }
     }
 
+    // handy rounding method
+    private static float round (float value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (float) Math.round(value * scale) / scale;
+    }
+
     private float extrapolateFloatValue(String tag, ArrayList<WeatherData> weatherDataArrayList) {
         switch(weatherDataArrayList.size()) {
             case 0:
@@ -129,7 +135,13 @@ public class WeatherData {
                     total += Float.parseFloat(weatherDataArrayList.get(i).get(tag));
                     i++;
                 }
-                return total/i;
+                float newValue = total/i;
+                if(tag == "PRCP") {
+                    newValue = round(newValue, 2);
+                } else {
+                    newValue = round(newValue, 1);
+                }
+                return newValue;
         }
     }
 
