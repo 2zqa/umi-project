@@ -95,9 +95,17 @@ public class WeatherData {
             }
 
             // Als data vet groot of vet klein is, fix het
-//            if() {
-//
-//            }
+            if(!needsRepairing && canRepair && tag == "TEMP") {
+                float avg = extrapolateFloatValue(tag, oldWeatherData);
+                float newVal = Integer.parseInt(attributes.get(tag));
+                if(avg > newVal*1.2) {
+                    newVal = (float) (newVal*1.2);
+                    this.add(tag, String.valueOf(newVal));
+                } else if(avg < newVal*0.8) {
+                    newVal = (float) (newVal * 0.8);
+                    this.add(tag, String.valueOf(newVal));
+                }
+            }
         }
 
         if(!canRepair && needsRepairing) {
