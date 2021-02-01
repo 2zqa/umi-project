@@ -37,11 +37,11 @@ public class JsonGen {
         }
     }
 
-    public void removeAllData() {
+    public synchronized void removeAllData() {
         weatherDataMap.clear();
     }
 
-    public void toJson(String filename) {
+    public synchronized void toJson(String filename) {
         long startTime = System.nanoTime();
         String pattern = "HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -101,7 +101,7 @@ public class JsonGen {
      * Writes the weatherDataMap info to their respective files
      *
      */
-    public void toJson() {
+    public void writeJsonScheduler() {
         final Runnable beeper = new Runnable() {
             public void run() {
                 // json bestand maken en de generator legen BELANGRIJK: zoals de data nu wordt opgeslagen is niet handig, moet nog ff nadenken over naamgeving

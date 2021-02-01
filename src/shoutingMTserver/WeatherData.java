@@ -1,10 +1,7 @@
 package shoutingMTserver;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 public class WeatherData {
 
@@ -59,8 +56,8 @@ public class WeatherData {
             canRepair = false;
         }
 
-        // tag can be WDSP for example
-        for(String tag : attributes.keySet()) {
+        // Use a copy
+        for(String tag : new HashSet<>(attributes.keySet())) {
             // Skip stn, date and time
             if (tag.equals("stn") || tag.equals("date") || tag.equals("time")) {
                 continue;
@@ -69,7 +66,7 @@ public class WeatherData {
             // Check if value is empty; if so, add new data
             String value = attributes.get(tag);
             if(value == null && canRepair) { // value = null, canRepair = true; (wel vorige data beschikbaar)
-                String newValue = "";
+                String newValue;
                 switch(tag) {
                     case "FRSHTT":
                         newValue = extrapolateByteValue(tag, oldWeatherData);
@@ -82,7 +79,7 @@ public class WeatherData {
                         break;
 
                 }
-                if(newValue.isEmpty()) {
+                if(newValue != null && newValue.isEmpty()) {
                     System.err.println("Nieuwe waarde voor "+ tag +" is niet goed geextrapoleerd. Dit zou niet moeten gebeuren!");
                     continue;
                 } else {
