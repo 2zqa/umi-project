@@ -30,10 +30,15 @@ class Worker implements Runnable
 
 			//begintijd voor timer
 			LocalTime beginTijd = LocalTime.now();
+			String lastline = "";
 
 			BufferedReader bin = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			while ((line = bin.readLine()) != null) {
+				lastline = line;
 				//System.out.println(line);
+//				if(9>8) {
+//					throw new RuntimeException("test");
+//				}
 				parser.parse(line, data);
 
 				// If it's the end of the XML file, parse it and reset buffer
@@ -42,6 +47,7 @@ class Worker implements Runnable
 					data = new WeatherData();
 				}
 			}
+			System.err.println("Client disconnected, latest line: \n"+lastline+"\n on thread "+Thread.currentThread().getName());
 
 			// now close the socket connection
 			connection.close();
