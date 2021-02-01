@@ -135,8 +135,7 @@ public class WeatherData {
         if(weatherDataArrayList.size() == 0) {
             return null;
         }
-        String value = weatherDataArrayList.get(0).get(tag);
-        return value;
+        return weatherDataArrayList.get(0).get(tag);
     }
 
 
@@ -163,7 +162,7 @@ public class WeatherData {
     }
 
     public ArrayList<WeatherData> getWeatherDataArrayByStationNumber(String stnummer, int maxFiles) {
-        ArrayList<WeatherData> dataArray = new ArrayList<WeatherData>();
+        ArrayList<WeatherData> dataArray = new ArrayList<>();
 
         File path = new File(JsonGen.PATH + stnummer);
         File[] directoryListing = path.listFiles();

@@ -18,7 +18,7 @@ class Worker implements Runnable
 
 	public void run() {
 		try {
-			String line;
+			String line = null;
 			//System.err.println("New worker thread started");
 
 			//lets check if we already accepted maximum number of connections
@@ -30,11 +30,21 @@ class Worker implements Runnable
 
 			//begintijd voor timer
 			LocalTime beginTijd = LocalTime.now();
-			String lastline = "";
 
 			BufferedReader bin = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			while ((line = bin.readLine()) != null) {
-				lastline = line;
+			while(true) {
+				if(!bin.ready()) {
+					// Give chance to connect
+					Thread.sleep(1000);
+					if(!bin.ready()) {
+						// last chance...
+						Thread.sleep(3000);
+						if(!bin.ready()) {
+							break;
+						}
+					}
+				}
+				line = bin.readLine();
 				//System.out.println(line);
 //				if(9>8) {
 //					throw new RuntimeException("test");
@@ -42,12 +52,12 @@ class Worker implements Runnable
 				parser.parse(line, data);
 
 				// If it's the end of the XML file, parse it and reset buffer
-				if(line.trim().equalsIgnoreCase("</MEASUREMENT>")) {
+				if (line.trim().equalsIgnoreCase("</MEASUREMENT>")) {
 					generator.addWeatherData(data);
 					data = new WeatherData();
 				}
 			}
-			System.err.println("Client disconnected, latest line: \n"+lastline+"\n on thread "+Thread.currentThread().getName());
+			System.err.println("Client disconnected, latest line: \n"+line+"\n on thread "+Thread.currentThread().getName());
 
 			// now close the socket connection
 			connection.close();
