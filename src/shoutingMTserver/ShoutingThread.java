@@ -71,7 +71,7 @@ class Worker implements Runnable
 					while(stream.available() > 0 && bin.ready()) {
 						bin.readLine();
 					}
-					System.out.println("Buffer was too large; cleared.");
+					//System.out.println("Buffer was too large; cleared.");
 				}
 
 				// Parse data
