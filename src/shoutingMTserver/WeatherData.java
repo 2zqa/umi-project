@@ -95,9 +95,9 @@ public class WeatherData {
             }
 
             // Als data vet groot of vet klein is, fix het
-            if(!needsRepairing && canRepair && tag == "TEMP") {
+            if(!needsRepairing && canRepair && tag.equals("TEMP")) {
                 float avg = extrapolateFloatValue(tag, oldWeatherData);
-                float newVal = Integer.parseInt(attributes.get(tag));
+                float newVal = Float.parseFloat(attributes.get(tag));
                 if(avg > newVal*1.2) {
                     newVal = (float) (newVal*1.2);
                     this.add(tag, String.valueOf(newVal));
