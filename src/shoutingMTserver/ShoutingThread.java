@@ -74,14 +74,14 @@ class Worker implements Runnable
 					//System.out.println("Buffer was too large; cleared.");
 				}
 
-				// Parse data
-				parser.parse(line, data);
-
-				// If it's the end of the XML file, parse it and reset buffer
-				if (line.trim().equalsIgnoreCase("</MEASUREMENT>")) {
-					generator.addWeatherData(data);
-					data = new WeatherData();
-				}
+//				// Parse data
+//				parser.parse(line, data);
+//
+//				// If it's the end of the XML file, parse it and reset buffer
+//				if (line.trim().equalsIgnoreCase("</MEASUREMENT>")) {
+//					generator.addWeatherData(data);
+//					data = new WeatherData();
+//				}
 			}
 			System.err.println("Client disconnected, latest line: \n"+line+"\n on thread "+Thread.currentThread().getName());
 
