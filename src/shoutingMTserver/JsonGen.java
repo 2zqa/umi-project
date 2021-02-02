@@ -30,10 +30,7 @@ public class JsonGen {
     public synchronized void addWeatherData(WeatherData data) {
         String stationNumber = data.get("STN");
         if(!weatherDataMap.containsKey(stationNumber)) {
-            boolean successful = data.repair();
-            if(successful) {
-                weatherDataMap.put(stationNumber, data);
-            }
+            weatherDataMap.put(stationNumber, data);
         }
     }
 
@@ -58,7 +55,10 @@ public class JsonGen {
 
             // Get station
             WeatherData data = weatherDataMap.get(stationNumber);
-
+            boolean successful = data.repair();
+            if(!successful) {
+                continue;
+            }
             try(BufferedWriter writer = new BufferedWriter(new FileWriter(folder+File.separator+filename))) {
                 writer.write("{");
                 writer.write("\"stn\":\"" + data.get("STN") + "\"");

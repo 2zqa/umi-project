@@ -1,7 +1,5 @@
 package shoutingMTserver;
 
-import java.util.Locale;
-
 /**
  * This class is heavily aimed at parsing very specific weatherdata formats.
  */
@@ -13,19 +11,22 @@ public class WeatherDataXMLParser {
      */
     public void parse(String line, WeatherData data) {
         // If there is no data, stop
-        if(!line.matches(".*\\d.*")) {
-            //System.out.println("Geen getal in " + line);
+        int firstOpenBracketIndex = line.indexOf('<');
+        if(firstOpenBracketIndex == -1) {
             return;
         }
-
-        //Remove any whitespace
-        line = line.trim();
+        int lastOpenBracketIndex = line.lastIndexOf('<');
+        // If there is only one open bracket, we don't need to parse the line
+        if(lastOpenBracketIndex == firstOpenBracketIndex) {
+            return;
+        }
+        int firstCloseBracketIndex = line.indexOf('>');
 
         // Gets tagname
-        String tag = line.substring(1,line.indexOf(">")).toUpperCase();
+        String tag = line.substring(firstOpenBracketIndex+1,firstCloseBracketIndex);
 
         // Gets value by removing tags
-        String value = line.replaceAll("<.+?>", "");
+        String value = line.substring(firstCloseBracketIndex+1,lastOpenBracketIndex);
 
         data.add(tag, value);
     }

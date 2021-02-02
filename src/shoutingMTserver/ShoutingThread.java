@@ -20,9 +20,6 @@ class Worker implements Runnable
 
 	public void run() {
 		try {
-			String line = null;
-			//System.err.println("New worker thread started");
-
 			//lets check if we already accepted maximum number of connections
 			ShoutingMTServer.mijnSemafoor.probeer();
 
@@ -30,13 +27,9 @@ class Worker implements Runnable
 			WeatherDataXMLParser parser = new WeatherDataXMLParser();
 			WeatherData data = new WeatherData();
 
-			//begintijd voor timer
-			LocalTime beginTijd = LocalTime.now();
-
 			InputStream stream = connection.getInputStream();
-
 			BufferedReader bin = new BufferedReader(new InputStreamReader(stream));
-
+			String line = null;
 			String lastLine = "";
 			while((line = bin.readLine()) != null) {
 				lastLine = line;
@@ -45,7 +38,7 @@ class Worker implements Runnable
 				// the queue when it becomes too full. This is done by reading/clearing the lines as fast as possible.
 				int available = stream.available();
 				if(available > MAX_QUEUE_SIZE) {
-					// Throw away weatherdata
+					// Throw away the now unusable weatherdata
 					data = new WeatherData();
 
 					// clear queue from bufferedReader (and therefore InputStream)
@@ -55,14 +48,14 @@ class Worker implements Runnable
 					//System.out.println("Buffer was too large; cleared.");
 				}
 
-//				// Parse data
-//				parser.parse(line, data);
-//
-//				// If it's the end of the XML file, parse it and reset buffer
-//				if (line.trim().equalsIgnoreCase("</MEASUREMENT>")) {
-//					generator.addWeatherData(data);
-//					data = new WeatherData();
-//				}
+				// Parse data
+				parser.parse(line, data);
+
+				// If it's the end of the XML file, parse it and reset buffer
+				if (line.contains("</MEASUREMENT>")) {
+					generator.addWeatherData(data);
+					data = new WeatherData();
+				}
 			}
 			System.err.println("Client disconnected, latest line: \n"+lastLine+"\n on thread "+Thread.currentThread().getName());
 
