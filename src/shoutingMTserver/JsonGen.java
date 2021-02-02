@@ -112,8 +112,8 @@ public class JsonGen {
         final Runnable beeper = new Runnable() {
             public void run() {
                 // json bestand maken en de generator legen BELANGRIJK: zoals de data nu wordt opgeslagen is niet handig, moet nog ff nadenken over naamgeving
-                //toJson(Instant.now().toString().replace( ":" , "" ) + ".json");
-                removeAllData();
+                toJson(Instant.now().toString().replace( ":" , "" ) + ".json");
+                //removeAllData();
             }
         };
         final ScheduledFuture<?> writerHandle =
