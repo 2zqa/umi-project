@@ -38,15 +38,22 @@ public class JsonGen {
         weatherDataMap.clear();
     }
 
-    public synchronized void toJson(String filename) {
+    public void toJson(String filename) {
         long startTime = System.nanoTime();
         String pattern = "HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
         String date = simpleDateFormat.format(new Date());
-        System.out.println(date +" - Writing "+weatherDataMap.size()+" files");
+        HashMap<String, WeatherData> oldMap;
+        synchronized(this) {
+            oldMap = this.weatherDataMap;
+            this.weatherDataMap = new HashMap<>();
+        }
+        System.out.println(date +" - Writing "+oldMap.size()+" files");
 
-        for (String stationNumber : weatherDataMap.keySet()) {
+
+        // Hier werken met oldMap. We zijn nu uit sync, dus we hebben aaaalle tijd. De netwerkthreads gaan weer door, en vullen die nieuwe map op
+
+        for (String stationNumber : oldMap.keySet()) {
             // Create directory if it does not exist
             String folder = PATH.concat(File.separator + stationNumber);
             File file = new File(folder); // bv C:\Users\mshko\12710\
@@ -54,7 +61,7 @@ public class JsonGen {
             file.mkdirs();
 
             // Get station
-            WeatherData data = weatherDataMap.get(stationNumber);
+            WeatherData data = oldMap.get(stationNumber);
             boolean successful = data.repair();
             if(!successful) {
                 continue;
