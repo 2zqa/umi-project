@@ -29,7 +29,7 @@ public class JsonGen {
      */
     public synchronized void addWeatherData(WeatherData data) {
         String stationNumber = data.get("STN");
-        if(!stationNumber.isEmpty() && !weatherDataMap.containsKey(stationNumber)) {
+        if(stationNumber != null && !stationNumber.isEmpty() && !weatherDataMap.containsKey(stationNumber)) {
             weatherDataMap.put(stationNumber, data);
         }
     }
