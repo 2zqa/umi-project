@@ -29,7 +29,7 @@ public class JsonGen {
      */
     public synchronized void addWeatherData(WeatherData data) {
         String stationNumber = data.get("STN");
-        if(!weatherDataMap.containsKey(stationNumber)) {
+        if(!stationNumber.isEmpty() && !weatherDataMap.containsKey(stationNumber)) {
             weatherDataMap.put(stationNumber, data);
         }
     }
@@ -105,7 +105,7 @@ public class JsonGen {
         final Runnable beeper = new Runnable() {
             public void run() {
                 // json bestand maken en de generator legen BELANGRIJK: zoals de data nu wordt opgeslagen is niet handig, moet nog ff nadenken over naamgeving
-                toJson(Instant.now().toString().replace( ":" , "" ) + ".json");
+                //toJson(Instant.now().toString().replace( ":" , "" ) + ".json");
                 removeAllData();
             }
         };
